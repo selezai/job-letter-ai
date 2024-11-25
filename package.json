@@ -1,0 +1,32 @@
+{
+  "name": "job-letter-ai",
+  "version": "1.0.0",
+  "main": "server/index.js",
+  "scripts": {
+    "start": "node server/index.js",
+    "dev": "nodemon server/index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "job",
+    "letter",
+    "ai",
+    "cover-letter",
+    "motivation-letter"
+  ],
+  "author": "",
+  "license": "ISC",
+  "description": "AI-powered job letter generation platform",
+  "dependencies": {
+    "@supabase/supabase-js": "^2.46.1",
+    "dotenv": "^16.4.5",
+    "express": "^4.21.1",
+    "express-fileupload": "^1.5.1",
+    "openai": "^4.73.0",
+    "paystack": "^2.0.1",
+    "paystack-api": "^2.0.6"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
