@@ -64,8 +64,15 @@ try {
   app.use(express.json());
   app.use(fileUpload());
 
+  // Debug request logging
+  app.use((req, res, next) => {
+      console.log('Request received:', req.method, req.url);
+      next();
+  });
+
   // API routes
   app.get('/api', (req, res) => {
+      console.log('API endpoint hit');
       res.json({ message: 'Letter AI API is running' });
   });
 
@@ -76,6 +83,7 @@ try {
 
   // Test endpoint for environment variables
   app.get('/test-env', (req, res) => {
+      console.log('Test-env endpoint hit');
       try {
           const envStatus = {
               supabase_url: !!process.env.SUPABASE_URL,
@@ -110,7 +118,7 @@ try {
   });
 
   // Serve static files after API routes
-  app.use(express.static('public'));
+  app.use(express.static(path.join(__dirname, 'client', 'public')));
 
   // Constants
   const LETTER_PRICE = 499; // R4.99 in cents
@@ -190,7 +198,7 @@ Please write the letter in a clear, modern business format.`;
 
   // Home route
   app.get('/', (req, res) => {
-      res.sendFile(path.join(__dirname, 'public', 'index.html'));
+      res.sendFile(path.join(__dirname, 'client', 'public', 'index.html'));
   });
 
   // Upload document endpoint
