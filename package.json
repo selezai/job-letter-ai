@@ -3,9 +3,13 @@
   "version": "1.0.0",
   "main": "server/index.js",
   "scripts": {
-    "start": "node server/index.js",
+    "build": "echo 'No build step required'",
+    "start": "npm run build && node server/index.js",
     "dev": "nodemon server/index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "engines": {
+    "node": ">=18.0.0"
   },
   "keywords": [
     "job",
@@ -18,6 +22,7 @@
   "license": "ISC",
   "description": "AI-powered job letter generation platform",
   "dependencies": {
+    "@anthropic-ai/sdk": "^0.32.1",
     "@supabase/supabase-js": "^2.46.1",
     "dotenv": "^16.4.5",
     "express": "^4.21.1",
@@ -25,8 +30,5 @@
     "openai": "^4.73.0",
     "paystack": "^2.0.1",
     "paystack-api": "^2.0.6"
-  },
-  "engines": {
-    "node": ">=18.0.0"
   }
 }
