@@ -60,53 +60,6 @@ try {
   
   const app = express();
 
-  // API routes first
-  app.get('/api', (req, res) => {
-      console.log('API endpoint hit');
-      res.json({ message: 'Letter AI API is running' });
-  });
-
-  // Health check endpoint
-  app.get('/health', (req, res) => {
-      res.json({ status: 'ok' });
-  });
-
-  // Test endpoint for environment variables
-  app.get('/test-env', (req, res) => {
-      console.log('Test-env endpoint hit');
-      try {
-          const envStatus = {
-              supabase_url: !!process.env.SUPABASE_URL,
-              supabase_key: !!process.env.SUPABASE_KEY,
-              anthropic_key: !!process.env.ANTHROPIC_API_KEY,
-              paystack_secret: !!process.env.PAYSTACK_SECRET,
-              callback_url: !!process.env.CALLBACK_URL,
-              port: process.env.PORT || '3000 (default)'
-          };
-          
-          // Log the actual environment variables for debugging
-          console.log('Environment Variables Check:');
-          console.log('SUPABASE_URL:', process.env.SUPABASE_URL ? 'Present' : 'Missing');
-          console.log('SUPABASE_KEY:', process.env.SUPABASE_KEY ? 'Present' : 'Missing');
-          console.log('ANTHROPIC_API_KEY:', process.env.ANTHROPIC_API_KEY ? 'Present' : 'Missing');
-          console.log('PAYSTACK_SECRET:', process.env.PAYSTACK_SECRET ? 'Present' : 'Missing');
-          console.log('CALLBACK_URL:', process.env.CALLBACK_URL ? 'Present' : 'Missing');
-          console.log('PORT:', process.env.PORT || '3000 (default)');
-          
-          res.json({
-              message: 'Environment Variable Status',
-              status: envStatus,
-              node_env: process.env.NODE_ENV || 'not set'
-          });
-      } catch (error) {
-          console.error('Error in test-env endpoint:', error);
-          res.status(500).json({
-              error: 'Failed to check environment variables',
-              details: error.message
-          });
-      }
-  });
-
   // Basic middleware
   app.use(express.json());
   app.use(fileUpload());
@@ -119,12 +72,10 @@ try {
 
   // Serve static files
   const publicPath = path.join(__dirname, 'public');
-  console.log('Serving static files from:', publicPath);
   app.use(express.static(publicPath));
 
   // Home route
   app.get('/', (req, res) => {
-      console.log('Home route hit');
       res.sendFile(path.join(__dirname, 'public', 'index.html'));
   });
 
@@ -492,158 +443,6 @@ Please write the letter in a clear, modern business format.`;
           res.status(500).json({ 
               error: 'Failed to generate letter',
               details: error.message 
-          });
-      }
-  });
-
-  // Test endpoint for letter generation
-  app.post('/test-letter-generation', async (req, res) => {
-      try {
-          // Create a test user with unique email
-          const testEmail = `test${Date.now()}@example.com`;
-          const { data: user, error: userError } = await supabaseAdmin
-              .from('users')
-              .insert({
-                  email: testEmail,
-                  free_letters_remaining: 1
-              })
-              .select()
-              .single();
-
-          if (userError) {
-              throw userError;
-          }
-
-          // Sample CV content
-          const cvContent = `PROFESSIONAL SUMMARY
-Experienced software developer with 5 years of experience in full-stack development.
-Proficient in JavaScript, Node.js, and React. Strong problem-solving skills and team collaboration.
-
-WORK EXPERIENCE
-Senior Developer, Tech Corp (2020-Present)
-- Led development of customer-facing web applications
-- Implemented CI/CD pipelines reducing deployment time by 50%
-- Mentored junior developers and conducted code reviews
-
-Software Engineer, StartUp Inc (2018-2020)
-- Developed RESTful APIs using Node.js and Express
-- Improved application performance by 40%
-- Collaborated with UX team for frontend implementations
-
-SKILLS
-- JavaScript, Node.js, React, Express
-- AWS, Docker, CI/CD
-- Agile methodologies
-- Team leadership
-
-EDUCATION
-Bachelor of Science in Computer Science
-University of Technology (2014-2018)`;
-
-          // Sample job description
-          const jobDescription = `Senior Full Stack Developer
-
-We are seeking a skilled Senior Full Stack Developer to join our growing team.
-
-Requirements:
-- 5+ years experience in web development
-- Strong proficiency in JavaScript and Node.js
-- Experience with modern frontend frameworks
-- Knowledge of CI/CD practices
-- Team leadership experience
-
-Responsibilities:
-- Develop and maintain web applications
-- Lead technical projects
-- Mentor junior developers
-- Implement best practices
-- Collaborate with cross-functional teams
-
-We offer:
-- Competitive salary
-- Remote work options
-- Professional development
-- Health benefits
-- Stock options`;
-
-          // Create CV upload record
-          const cvBuffer = Buffer.from(cvContent);
-          const jobBuffer = Buffer.from(jobDescription);
-
-          // Create CV upload record
-          const { data: cvUpload, error: cvError } = await supabaseAdmin
-              .from('uploads')
-              .insert({
-                  user_id: user.id,
-                  document_type: 'cv',
-                  file_type: 'text/plain',
-                  original_filename: 'test_cv.txt',
-                  file_size: cvBuffer.length
-              })
-              .select()
-              .single();
-
-          if (cvError) {
-              throw cvError;
-          }
-
-          // Create job description upload record
-          const { data: jobUpload, error: jobError } = await supabaseAdmin
-              .from('uploads')
-              .insert({
-                  user_id: user.id,
-                  document_type: 'job_description',
-                  file_type: 'text/plain',
-                  original_filename: 'test_job.txt',
-                  file_size: jobBuffer.length
-              })
-              .select()
-              .single();
-
-          if (jobError) {
-              throw jobError;
-          }
-
-          // Generate letter using Claude directly with text content
-          const generatedContent = await generateLetterContent(
-              cvContent,
-              jobDescription,
-              'cover_letter'
-          );
-
-          // Create letter record
-          const { data: letter, error: letterError } = await supabaseAdmin
-              .from('generated_letters')
-              .insert({
-                  user_id: user.id,
-                  letter_type: 'cover_letter',
-                  cv_upload_id: cvUpload.id,
-                  job_desc_upload_id: jobUpload.id,
-                  content: generatedContent,
-                  payment_status: 'completed'
-              })
-              .select()
-              .single();
-
-          if (letterError) {
-              throw letterError;
-          }
-
-          res.json({
-              success: true,
-              data: {
-                  letter,
-                  user,
-                  cvContent,
-                  jobDescription
-              }
-          });
-
-      } catch (error) {
-          console.error('Test letter generation error:', error);
-          res.status(500).json({
-              error: 'Failed to generate test letter',
-              details: error.message
           });
       }
   });
