@@ -1,168 +1,267 @@
-/* Global Styles */
+/* General Styling */
 body {
-  font-family: 'Inter', sans-serif;
+  font-family: 'Arial', sans-serif;
   margin: 0;
   padding: 0;
-  background: #f9f9f9;
-  color: #333;
+  background-color: #f9f9f9;
 }
 
-h1, h2, h3 {
-  font-weight: 700;
-}
-
-a {
-  text-decoration: none;
-  color: #0066cc;
-}
-
-input, select, button {
-  font-family: 'Inter', sans-serif;
-}
-
-/* Navbar */
-.navbar {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 10px 20px;
-  background: #0066cc;
-  color: #fff;
-}
-
-.nav-links .nav-link {
-  margin-left: 15px;
-  color: #fff;
-  font-weight: bold;
-}
-
-.nav-link:hover {
-  text-decoration: underline;
-}
-
-/* Upload Section */
-.upload-section {
-  padding: 50px 20px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background: linear-gradient(90deg, #0066cc, #66ccff);
-  color: #fff;
-}
-
-.upload-container {
-  display: flex;
-  gap: 50px;
-}
-
-.upload-info h1 {
-  font-size: 2rem;
-}
-
-.upload-form {
-  background: #fff;
+/* Container Styling */
+.container {
   padding: 20px;
-  border-radius: 10px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  color: #333;
+  margin: 0 auto;
+  max-width: 400px;
 }
 
-.upload-form label {
-  display: block;
-  margin-bottom: 5px;
+/* Heading and Description */
+h1 {
+  font-size: 24px;
   font-weight: bold;
-}
-
-.upload-form input, 
-.upload-form select {
-  width: 100%;
-  padding: 10px;
-  margin-bottom: 15px;
-  border: 1px solid #ddd;
-  border-radius: 5px;
-}
-
-.btn-primary {
-  width: 100%;
-  padding: 15px;
-  background: #0066cc;
-  color: #fff;
-  font-weight: bold;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-}
-
-.btn-primary:hover {
-  background: #005bb5;
-}
-
-/* Dashboard Section */
-.dashboard-section {
-  padding: 50px 20px;
-  background: #f9f9f9;
-}
-
-#recentActivity {
-  display: flex;
-  gap: 20px;
-  flex-wrap: wrap;
-}
-
-.activity-card {
-  background: #fff;
-  border: 1px solid #ddd;
-  padding: 15px;
-  border-radius: 10px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  flex: 1;
-  max-width: 300px;
-}
-
-.activity-card h3 {
-  font-size: 1.2rem;
+  color: #2c3e50;
+  text-align: center;
   margin-bottom: 10px;
 }
 
-.no-activity-message {
-  font-style: italic;
-  color: #888;
+p {
+  font-size: 16px;
+  color: #7f8c8d;
+  text-align: center;
+  margin-bottom: 20px;
 }
 
-.btn-secondary {
+/* Blue Gradient Background */
+.header {
+  background: linear-gradient(135deg, #007bff, #5bc0de);
+  color: #fff;
+  padding: 20px 10px;
+  text-align: center;
+  border-radius: 10px;
+  margin-bottom: 20px;
+}
+
+.header h1 {
+  font-size: 22px;
+  margin-bottom: 8px;
+  color: #fff;
+}
+
+.header p {
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.9);
+  margin-bottom: 5px;
+}
+
+/* Form Styling */
+form {
+  background: #ffffff;
+  border: 1px solid #eaeaea;
+  border-radius: 10px;
+  padding: 20px;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px;
+}
+
+/* Input Fields */
+input[type="email"],
+select,
+input[type="file"] {
   width: 100%;
-  padding: 10px;
-  background: #f0f0f0;
+  padding: 12px;
+  margin-bottom: 15px;
+  border: 1px solid #dcdcdc;
+  border-radius: 5px;
+  font-size: 14px;
+  box-sizing: border-box;
+}
+
+label {
+  display: block;
+  margin-bottom: 5px;
+  color: #2c3e50;
+  font-weight: 500;
+}
+
+/* Upload Buttons */
+input[type="file"]::file-selector-button {
+  background: #007bff;
+  color: #fff;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+input[type="file"]::file-selector-button:hover {
+  background: #0056b3;
+}
+
+/* Generate Button */
+button {
+  width: 100%;
+  padding: 12px;
+  background: #007bff;
+  color: #fff;
+  font-size: 16px;
+  font-weight: bold;
   border: none;
   border-radius: 5px;
   cursor: pointer;
+  transition: background-color 0.2s ease;
 }
 
-.btn-secondary:hover {
-  background: #ddd;
+button:hover {
+  background: #0056b3;
+}
+
+button:disabled {
+  background: #cccccc;
+  cursor: not-allowed;
+}
+
+/* Recent Activity Section */
+.recent-activity {
+  background: #ffffff;
+  border: 1px solid #eaeaea;
+  border-radius: 10px;
+  padding: 20px;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+  margin-top: 20px;
+}
+
+.activity-card {
+  border: 1px solid #eaeaea;
+  border-radius: 5px;
+  padding: 15px;
+  margin-bottom: 10px;
+  background: #f8f9fa;
+}
+
+.activity-card h3 {
+  margin: 0 0 5px 0;
+  font-size: 16px;
+  color: #2c3e50;
+}
+
+.activity-card p {
+  margin: 0 0 10px 0;
+  font-size: 14px;
+  color: #7f8c8d;
+  text-align: left;
+}
+
+.activity-card button {
+  width: auto;
+  padding: 8px 16px;
+  font-size: 14px;
+}
+
+/* Loading Spinner */
+.loading-spinner {
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  border: 3px solid #ffffff;
+  border-radius: 50%;
+  border-top-color: transparent;
+  animation: spin 1s linear infinite;
+  margin-right: 8px;
+  vertical-align: middle;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Success and Error Messages */
+.success-message,
+.error-message {
+  padding: 12px;
+  border-radius: 5px;
+  margin-bottom: 15px;
+  text-align: center;
+  animation: fadeIn 0.3s ease;
+}
+
+.success-message {
+  background-color: #d4edda;
+  color: #155724;
+  border: 1px solid #c3e6cb;
+}
+
+.error-message {
+  background-color: #f8d7da;
+  color: #721c24;
+  border: 1px solid #f5c6cb;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Empty State */
+.no-activity-message {
+  text-align: center;
+  color: #7f8c8d;
+  font-style: italic;
+  padding: 20px;
 }
 
 /* Footer */
 footer {
+  margin-top: 40px;
   padding: 20px;
   text-align: center;
-  background: #333;
-  color: #fff;
+  color: #7f8c8d;
+  font-size: 14px;
 }
 
-/* Responsive Design */
-@media (max-width: 768px) {
-  .upload-container {
-    flex-direction: column;
-    gap: 30px;
+/* Mobile Responsiveness */
+@media screen and (max-width: 768px) {
+  .container {
+    padding: 15px;
   }
 
-  .upload-form {
-    width: 100%;
-    max-width: 400px;
+  h1 {
+    font-size: 20px;
+  }
+
+  p {
+    font-size: 14px;
+  }
+
+  .header {
+    padding: 15px 10px;
+  }
+
+  input[type="file"]::file-selector-button {
+    padding: 6px 12px;
+    font-size: 14px;
+  }
+
+  button {
+    padding: 10px;
+    font-size: 14px;
   }
 
   .activity-card {
-    max-width: 100%;
+    padding: 12px;
+  }
+}
+
+/* Accessibility Improvements */
+:focus {
+  outline: 2px solid #007bff;
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
   }
 }
