@@ -118,7 +118,15 @@ try {
   });
 
   // Serve static files after API routes
-  app.use(express.static(path.join(__dirname, 'client', 'public')));
+  const publicPath = path.join(__dirname, 'public');
+  console.log('Serving static files from:', publicPath);
+  app.use(express.static(publicPath));
+
+  // Home route
+  app.get('/', (req, res) => {
+      console.log('Home route hit');
+      res.sendFile(path.join(__dirname, 'public', 'index.html'));
+  });
 
   // Constants
   const LETTER_PRICE = 499; // R4.99 in cents
@@ -195,11 +203,6 @@ Please write the letter in a clear, modern business format.`;
           throw new Error(`Claude API error: ${error.message}`);
       }
   }
-
-  // Home route
-  app.get('/', (req, res) => {
-      res.sendFile(path.join(__dirname, 'client', 'public', 'index.html'));
-  });
 
   // Upload document endpoint
   app.post('/upload', async (req, res) => {
