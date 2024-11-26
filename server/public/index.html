@@ -3,78 +3,64 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Job Letter AI - Professional Letter Generator</title>
+    <title>Letter AI - Professional Letter Generator</title>
     <meta name="description" content="Generate professional job-related letters with AI assistance. Create compelling cover letters and motivation letters with ease.">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://js.paystack.co/v1/inline.js"></script>
     <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="/css/styles.css" rel="stylesheet">
+    <script src="https://js.paystack.co/v1/inline.js"></script>
     <style>
         body {
             font-family: 'Inter', sans-serif;
         }
-        .dashboard-card {
-            transition: transform 0.2s;
+        .app-container {
+            display: flex;
+            flex-direction: row;
+            height: 100vh;
+            overflow: hidden;
         }
-        .dashboard-card:hover {
-            transform: translateY(-2px);
+        .sidebar {
+            width: 256px;
+            background-color: #fff;
+            padding: 20px;
+            border-right: 1px solid #ddd;
+            height: 100%;
+            position: relative;
         }
-        .nav-link {
-            transition: all 0.2s ease;
-            width: 100%;
+        .sidebar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
         }
-        .nav-link:hover {
-            background-color: #F3F4F6;
+        .toggle-sidebar {
+            background-color: #fff;
+            border: none;
+            padding: 10px;
+            cursor: pointer;
         }
-        .nav-link i {
-            width: 24px;
-            height: 24px;
+        .nav-item {
             display: flex;
             align-items: center;
-            justify-content: center;
+            padding: 10px;
+            border-radius: 5px;
+            cursor: pointer;
         }
-        .nav-link.active {
-            color: #2563EB;
-            background-color: #EFF6FF;
+        .nav-item.active {
+            background-color: #f7f7f7;
         }
-        .nav-text {
-            transition: opacity 0.2s ease;
+        .nav-item i {
+            margin-right: 10px;
         }
-        /* Mobile Navigation Styles */
-        @media (max-width: 768px) {
-            .side-navigation {
-                position: fixed;
-                left: -100%;
-                top: 0;
-                bottom: 0;
-                width: 80%;
-                max-width: 300px;
-                z-index: 50;
-                transition: all 0.3s ease-in-out;
-            }
-            .side-navigation.active {
-                left: 0;
-            }
-            .mobile-overlay {
-                display: none;
-                position: fixed;
-                top: 0;
-                left: 0;
-                right: 0;
-                bottom: 0;
-                background: rgba(0, 0, 0, 0.5);
-                z-index: 40;
-            }
-            .mobile-overlay.active {
-                display: block;
-            }
-            .main-content {
-                margin-left: 0 !important;
-                width: 100% !important;
-            }
+        .main-content {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
         }
-
-        /* Modal Styles */
+        .mobile-menu-btn {
+            display: none;
+        }
         .modal {
             display: none;
             position: fixed;
@@ -87,558 +73,248 @@
             align-items: center;
             justify-content: center;
         }
-        .modal.active {
-            display: flex;
+        .modal-container {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 5px;
+            width: 500px;
+            max-width: 90%;
         }
-        .modal-content {
-            background-color: white;
-            padding: 2rem;
-            border-radius: 1rem;
-            width: 90%;
-            max-width: 500px;
-            max-height: 90vh;
-            overflow-y: auto;
+        .modal-close {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background-color: #fff;
+            border: none;
+            padding: 10px;
+            cursor: pointer;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        .form-label {
+            display: block;
+            margin-bottom: 10px;
+        }
+        .dropzone {
+            border: 2px dashed #ddd;
+            padding: 20px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .dropzone i {
+            margin-bottom: 10px;
+        }
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .btn-primary {
+            background-color: #4CAF50;
+            color: #fff;
+        }
+        .btn-outline {
+            background-color: #fff;
+            border: 1px solid #ddd;
+            color: #333;
+        }
+        .activity-feed {
+            padding: 20px;
+        }
+        .letter-status {
+            padding: 20px;
+        }
+        @media (max-width: 768px) {
+            .app-container {
+                flex-direction: column;
+            }
+            .sidebar {
+                width: 100%;
+                height: auto;
+                border: none;
+            }
+            .mobile-menu-btn {
+                display: block;
+            }
         }
     </style>
 </head>
-<body class="bg-gray-50">
-    <!-- Mobile Overlay -->
-    <div class="mobile-overlay"></div>
-
-    <div class="min-h-screen flex">
-        <!-- Side Navigation -->
-        <aside class="side-navigation w-64 bg-white shadow-lg h-screen fixed lg:relative lg:translate-x-0 z-50">
-            <div class="p-6">
-                <div class="flex items-center justify-between mb-8">
-                    <div class="flex items-center space-x-3">
-                        <i class="bx bx-mail-send text-blue-600 text-3xl"></i>
-                        <h1 class="text-xl font-bold text-gray-900">Letter AI</h1>
-                    </div>
-                    <button id="collapseBtn" class="hidden lg:flex items-center justify-center w-8 h-8 rounded-lg hover:bg-gray-100">
-                        <i class="bx bx-chevron-left text-xl"></i>
-                    </button>
+<body>
+    <div class="app-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="flex items-center space-x-3">
+                    <i class="bx bx-mail-send text-primary text-3xl"></i>
+                    <h1 class="text-xl font-bold">Letter AI</h1>
                 </div>
-                
-                <div class="space-y-4">
-                    <a href="#dashboard" class="nav-link flex items-center space-x-3 text-blue-600 bg-blue-50 rounded-lg px-4 py-2">
-                        <i class="bx bx-grid-alt text-xl"></i>
-                        <span class="nav-text">Dashboard</span>
-                    </a>
-                    <a href="#letters" class="nav-link flex items-center space-x-3 text-gray-600 hover:bg-gray-50 rounded-lg px-4 py-2">
-                        <i class="bx bx-file text-xl"></i>
-                        <span class="nav-text">My Letters</span>
-                    </a>
-                    <a href="#templates" class="nav-link flex items-center space-x-3 text-gray-600 hover:bg-gray-50 rounded-lg px-4 py-2">
-                        <i class="bx bx-copy-alt text-xl"></i>
-                        <span class="nav-text">Templates</span>
-                    </a>
-                    <a href="#settings" class="nav-link flex items-center space-x-3 text-gray-600 hover:bg-gray-50 rounded-lg px-4 py-2">
-                        <i class="bx bx-cog text-xl"></i>
-                        <span class="nav-text">Settings</span>
-                    </a>
-                </div>
+                <button class="toggle-sidebar">
+                    <i class="bx bx-chevron-left"></i>
+                </button>
             </div>
+            
+            <nav class="mt-6">
+                <a href="#dashboard" class="nav-item active">
+                    <i class="bx bx-grid-alt"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a href="#letters" class="nav-item">
+                    <i class="bx bx-file"></i>
+                    <span>My Letters</span>
+                </a>
+                <a href="#templates" class="nav-item">
+                    <i class="bx bx-copy-alt"></i>
+                    <span>Templates</span>
+                </a>
+                <a href="#settings" class="nav-item">
+                    <i class="bx bx-cog"></i>
+                    <span>Settings</span>
+                </a>
+            </nav>
         </aside>
 
         <!-- Main Content -->
-        <main class="main-content flex-1 min-h-screen lg:ml-64">
-            <!-- Top Navigation -->
-            <nav class="bg-white shadow-sm sticky top-0 z-40">
-                <div class="px-4 sm:px-6">
-                    <div class="flex justify-between h-16">
-                        <!-- Mobile Menu Button -->
-                        <button class="lg:hidden flex items-center focus:outline-none" id="mobileMenuBtn">
-                            <i class="bx bx-menu text-2xl text-gray-600"></i>
+        <main class="main-content">
+            <!-- Top Bar -->
+            <header class="flex justify-between items-center mb-8">
+                <button class="mobile-menu-btn lg:hidden">
+                    <i class="bx bx-menu text-2xl"></i>
+                </button>
+                <div class="flex items-center space-x-4">
+                    <button class="btn btn-outline">
+                        <i class="bx bx-user mr-2"></i>
+                        <span class="hidden sm:inline">Account</span>
+                    </button>
+                </div>
+            </header>
+
+            <!-- Welcome Section -->
+            <section class="mb-8">
+                <h1 class="text-2xl font-bold mb-2">Welcome back! 👋</h1>
+                <p class="text-gray-600">Ready to create your next professional letter?</p>
+            </section>
+
+            <!-- Quick Actions -->
+            <section class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+                <div class="card p-6">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="flex items-center space-x-3">
+                            <div class="bg-blue-100 p-3 rounded-lg">
+                                <i class="bx bx-file text-primary text-xl"></i>
+                            </div>
+                            <div>
+                                <h3 class="font-semibold">Generate Letter</h3>
+                                <p class="text-sm text-gray-600">Create a new letter</p>
+                            </div>
+                        </div>
+                        <button class="generate-letter-btn btn btn-primary">
+                            Start
                         </button>
-                        
-                        <!-- User Menu -->
-                        <div class="flex items-center">
-                            <button class="flex items-center space-x-2 text-gray-700 hover:text-gray-900">
-                                <span class="text-sm font-medium hidden sm:inline">sele@example.com</span>
-                                <i class="bx bx-user text-xl sm:hidden"></i>
-                                <i class="bx bx-chevron-down hidden sm:inline"></i>
+                    </div>
+                </div>
+
+                <div class="card p-6">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="flex items-center space-x-3">
+                            <div class="bg-green-100 p-3 rounded-lg">
+                                <i class="bx bx-check-circle text-success text-xl"></i>
+                            </div>
+                            <div>
+                                <h3 class="font-semibold">Free Letters</h3>
+                                <p class="text-sm text-gray-600">2 remaining</p>
+                            </div>
+                        </div>
+                        <button class="btn btn-outline">
+                            Upgrade
+                        </button>
+                    </div>
+                </div>
+
+                <div class="card p-6">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="flex items-center space-x-3">
+                            <div class="bg-purple-100 p-3 rounded-lg">
+                                <i class="bx bx-cloud-upload text-purple-600 text-xl"></i>
+                            </div>
+                            <div>
+                                <h3 class="font-semibold">Upload Files</h3>
+                                <p class="text-sm text-gray-600">CV & Job Description</p>
+                            </div>
+                        </div>
+                        <label class="btn btn-outline cursor-pointer">
+                            Upload
+                            <input type="file" class="hidden" multiple>
+                        </label>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Letter Generation Form Modal -->
+            <div class="modal" id="letterModal">
+                <div class="modal-container slide-in">
+                    <div class="flex justify-between items-center mb-6">
+                        <h2 class="text-xl font-bold">Generate New Letter</h2>
+                        <button class="modal-close">
+                            <i class="bx bx-x text-2xl"></i>
+                        </button>
+                    </div>
+
+                    <form id="letterForm" class="space-y-6">
+                        <div class="form-group">
+                            <label class="form-label">Upload Your CV</label>
+                            <div class="dropzone" id="cvDropZone">
+                                <i class="bx bx-upload text-3xl mb-2"></i>
+                                <p>Drag and drop your CV here or click to browse</p>
+                                <input type="file" id="cvUpload" class="hidden" accept=".pdf,.doc,.docx">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Upload Job Description</label>
+                            <div class="dropzone" id="jobDescDropZone">
+                                <i class="bx bx-upload text-3xl mb-2"></i>
+                                <p>Drag and drop the job description here or click to browse</p>
+                                <input type="file" id="jobDescUpload" class="hidden" accept=".pdf,.doc,.docx,.txt">
+                            </div>
+                        </div>
+
+                        <div class="flex justify-end space-x-4">
+                            <button type="button" class="btn btn-outline" id="cancelGeneration">
+                                Cancel
+                            </button>
+                            <button type="submit" class="btn btn-primary">
+                                Generate Letter
                             </button>
                         </div>
-                    </div>
-                </div>
-            </nav>
-
-            <!-- Dashboard Content -->
-            <div class="p-4 sm:p-6 lg:p-8">
-                <!-- Welcome Section -->
-                <div class="mb-6">
-                    <h2 class="text-xl sm:text-2xl font-bold text-gray-900">Welcome back, Sele! 🎉</h2>
-                    <p class="mt-1 text-sm sm:text-base text-gray-600">Here's what's happening with your letters</p>
-                </div>
-
-                <!-- Usage Stats -->
-                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 mb-6 sm:mb-8">
-                    <div class="bg-white rounded-xl shadow-sm p-4 sm:p-6">
-                        <div class="flex items-center space-x-3">
-                            <div class="p-2 sm:p-3 bg-blue-100 rounded-lg shrink-0">
-                                <i class="bx bx-file text-lg sm:text-xl text-blue-600"></i>
-                            </div>
-                            <div>
-                                <p class="text-xs sm:text-sm text-gray-600">Letters Generated</p>
-                                <p class="text-xl sm:text-2xl font-bold text-gray-900">3</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="bg-white rounded-xl shadow-sm p-4 sm:p-6">
-                        <div class="flex items-center space-x-3">
-                            <div class="p-2 sm:p-3 bg-green-100 rounded-lg shrink-0">
-                                <i class="bx bx-check-circle text-lg sm:text-xl text-green-600"></i>
-                            </div>
-                            <div>
-                                <p class="text-xs sm:text-sm text-gray-600">Free Letters Left</p>
-                                <p class="text-xl sm:text-2xl font-bold text-gray-900">1</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="bg-white rounded-xl shadow-sm p-4 sm:p-6">
-                        <div class="flex items-center space-x-3">
-                            <div class="p-2 sm:p-3 bg-purple-100 rounded-lg shrink-0">
-                                <i class="bx bx-cloud-upload text-lg sm:text-xl text-purple-600"></i>
-                            </div>
-                            <div>
-                                <p class="text-xs sm:text-sm text-gray-600">Documents Uploaded</p>
-                                <p class="text-xl sm:text-2xl font-bold text-gray-900">6</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Quick Actions -->
-                <div class="mb-6 sm:mb-8">
-                    <h3 class="text-base sm:text-lg font-semibold text-gray-900 mb-3 sm:mb-4">Quick Actions</h3>
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
-                        <button id="generateLetterBtn" class="flex items-center justify-center space-x-2 px-4 sm:px-6 py-3 sm:py-4 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition-colors text-sm sm:text-base">
-                            <i class="bx bx-plus-circle text-lg sm:text-xl"></i>
-                            <span>Generate New Letter</span>
-                        </button>
-                        <button id="viewLettersBtn" class="flex items-center justify-center space-x-2 px-4 sm:px-6 py-3 sm:py-4 bg-gray-100 text-gray-700 rounded-xl hover:bg-gray-200 transition-colors text-sm sm:text-base">
-                            <i class="bx bx-folder-open text-lg sm:text-xl"></i>
-                            <span>View All Letters</span>
-                        </button>
-                    </div>
-                </div>
-
-                <!-- Recent Activity -->
-                <div class="mb-6 sm:mb-8">
-                    <div class="flex justify-between items-center mb-3 sm:mb-4">
-                        <h3 class="text-base sm:text-lg font-semibold text-gray-900">Recent Activity</h3>
-                        <a href="#" class="text-xs sm:text-sm text-blue-600 hover:text-blue-700">View All</a>
-                    </div>
-                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
-                        <!-- Recent Letter Cards -->
-                        <div class="dashboard-card bg-white rounded-xl shadow-sm p-4 sm:p-6">
-                            <div class="flex items-center justify-between mb-3 sm:mb-4">
-                                <div class="p-2 bg-blue-100 rounded-lg">
-                                    <i class="bx bx-file text-lg sm:text-xl text-blue-600"></i>
-                                </div>
-                                <span class="text-xs sm:text-sm text-gray-500">2 mins ago</span>
-                            </div>
-                            <h4 class="font-medium text-gray-900 mb-1 text-sm sm:text-base">Cover Letter</h4>
-                            <p class="text-xs sm:text-sm text-gray-600 mb-3 sm:mb-4">Software Engineer Position</p>
-                            <div class="flex justify-between items-center">
-                                <span class="text-xs sm:text-sm text-gray-500">PDF • 245 KB</span>
-                                <button class="flex items-center space-x-1 text-blue-600 hover:text-blue-700 text-xs sm:text-sm">
-                                    <i class="bx bx-download"></i>
-                                    <span>Download</span>
-                                </button>
-                            </div>
-                        </div>
-                        <div class="dashboard-card bg-white rounded-xl shadow-sm p-4 sm:p-6">
-                            <div class="flex items-center justify-between mb-3 sm:mb-4">
-                                <div class="p-2 bg-blue-100 rounded-lg">
-                                    <i class="bx bx-file text-lg sm:text-xl text-blue-600"></i>
-                                </div>
-                                <span class="text-xs sm:text-sm text-gray-500">1 hour ago</span>
-                            </div>
-                            <h4 class="font-medium text-gray-900 mb-1 text-sm sm:text-base">Motivation Letter</h4>
-                            <p class="text-xs sm:text-sm text-gray-600 mb-3 sm:mb-4">Graduate Program</p>
-                            <div class="flex justify-between items-center">
-                                <span class="text-xs sm:text-sm text-gray-500">PDF • 198 KB</span>
-                                <button class="flex items-center space-x-1 text-blue-600 hover:text-blue-700 text-xs sm:text-sm">
-                                    <i class="bx bx-download"></i>
-                                    <span>Download</span>
-                                </button>
-                            </div>
-                        </div>
-                        <div class="dashboard-card bg-white rounded-xl shadow-sm p-4 sm:p-6">
-                            <div class="flex items-center justify-between mb-3 sm:mb-4">
-                                <div class="p-2 bg-blue-100 rounded-lg">
-                                    <i class="bx bx-file text-lg sm:text-xl text-blue-600"></i>
-                                </div>
-                                <span class="text-xs sm:text-sm text-gray-500">2 days ago</span>
-                            </div>
-                            <h4 class="font-medium text-gray-900 mb-1 text-sm sm:text-base">Cover Letter</h4>
-                            <p class="text-xs sm:text-sm text-gray-600 mb-3 sm:mb-4">Product Manager Role</p>
-                            <div class="flex justify-between items-center">
-                                <span class="text-xs sm:text-sm text-gray-500">PDF • 221 KB</span>
-                                <button class="flex items-center space-x-1 text-blue-600 hover:text-blue-700 text-xs sm:text-sm">
-                                    <i class="bx bx-download"></i>
-                                    <span>Download</span>
-                                </button>
-                            </div>
-                        </div>
-                    </div>
+                    </form>
                 </div>
             </div>
+
+            <!-- Recent Activity -->
+            <section class="mb-8">
+                <div class="flex justify-between items-center mb-4">
+                    <h2 class="text-xl font-bold">Recent Activity</h2>
+                    <a href="#" class="text-primary hover:text-primary-dark">View All</a>
+                </div>
+                <div class="card">
+                    <div class="activity-feed p-4">
+                        <!-- Activity items will be dynamically inserted here -->
+                    </div>
+                </div>
+            </section>
+
+            <!-- Letter Status -->
+            <section class="mb-8">
+                <h2 class="text-xl font-bold mb-4">Letter Status</h2>
+                <div class="letter-status">
+                    <!-- Status cards will be dynamically inserted here -->
+                </div>
+            </section>
         </main>
     </div>
 
-    <!-- Letter Generation Modal -->
-    <div id="letterModal" class="modal">
-        <div class="modal-content">
-            <div class="flex justify-between items-center mb-6">
-                <h3 class="text-xl font-bold text-gray-900">Generate New Letter</h3>
-                <button id="closeModal" class="text-gray-500 hover:text-gray-700">
-                    <i class="bx bx-x text-2xl"></i>
-                </button>
-            </div>
-            <form id="letterForm" class="space-y-4">
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Letter Type</label>
-                    <select id="letterType" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
-                        <option value="cover">Cover Letter</option>
-                        <option value="motivation">Motivation Letter</option>
-                    </select>
-                </div>
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Upload Resume/CV</label>
-                    <div id="cvDropZone" class="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-lg">
-                        <div class="space-y-1 text-center">
-                            <i class="bx bx-upload text-3xl text-gray-400"></i>
-                            <div class="flex text-sm text-gray-600">
-                                <label for="cv-upload" class="relative cursor-pointer rounded-md font-medium text-blue-600 hover:text-blue-500">
-                                    <span>Upload CV</span>
-                                    <input id="cv-upload" name="cv-upload" type="file" class="sr-only" accept=".pdf,.jpg,.jpeg,.png">
-                                </label>
-                                <p class="pl-1">or drag and drop</p>
-                            </div>
-                            <p class="text-xs text-gray-500">PDF or Images (JPG, PNG) up to 10MB</p>
-                        </div>
-                    </div>
-                </div>
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Upload Job Description</label>
-                    <div id="jobDescDropZone" class="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-lg">
-                        <div class="space-y-1 text-center">
-                            <i class="bx bx-upload text-3xl text-gray-400"></i>
-                            <div class="flex text-sm text-gray-600">
-                                <label for="job-desc-upload" class="relative cursor-pointer rounded-md font-medium text-blue-600 hover:text-blue-500">
-                                    <span>Upload Job Description</span>
-                                    <input id="job-desc-upload" name="job-desc-upload" type="file" class="sr-only" accept=".pdf,.jpg,.jpeg,.png">
-                                </label>
-                                <p class="pl-1">or drag and drop</p>
-                            </div>
-                            <p class="text-xs text-gray-500">PDF or Images (JPG, PNG) up to 10MB</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="flex justify-end space-x-3 mt-6">
-                    <button type="button" id="cancelGeneration" class="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200">
-                        Cancel
-                    </button>
-                    <button type="submit" class="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700">
-                        Generate Letter
-                    </button>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    <script>
-        // Mobile menu functionality
-        const mobileMenuBtn = document.getElementById('mobileMenuBtn');
-        const sideNavigation = document.querySelector('.side-navigation');
-        const mobileOverlay = document.querySelector('.mobile-overlay');
-        const collapseBtn = document.getElementById('collapseBtn');
-        const navLinks = document.querySelectorAll('.nav-link');
-        const generateLetterBtn = document.getElementById('generateLetterBtn');
-        const viewLettersBtn = document.getElementById('viewLettersBtn');
-        const downloadBtns = document.querySelectorAll('.bx-download');
-
-        // Side Navigation Collapse Functionality
-        let isCollapsed = false;
-        collapseBtn.addEventListener('click', () => {
-            isCollapsed = !isCollapsed;
-            sideNavigation.style.width = isCollapsed ? '80px' : '256px';
-            collapseBtn.querySelector('i').classList.toggle('bx-chevron-right');
-            collapseBtn.querySelector('i').classList.toggle('bx-chevron-left');
-            
-            // Hide/Show text in navigation
-            document.querySelectorAll('.nav-text').forEach(text => {
-                text.style.display = isCollapsed ? 'none' : 'inline';
-            });
-            
-            // Adjust main content margin
-            document.querySelector('.main-content').style.marginLeft = isCollapsed ? '80px' : '256px';
-        });
-
-        // Navigation Link Functionality
-        navLinks.forEach(link => {
-            link.addEventListener('click', (e) => {
-                e.preventDefault();
-                // Remove active class from all links
-                navLinks.forEach(l => {
-                    l.classList.remove('text-blue-600', 'bg-blue-50');
-                    l.classList.add('text-gray-600');
-                });
-                // Add active class to clicked link
-                link.classList.remove('text-gray-600');
-                link.classList.add('text-blue-600', 'bg-blue-50');
-                
-                // Handle navigation
-                const section = link.getAttribute('href').substring(1);
-                console.log(`Navigating to ${section}`);
-                // Add your navigation logic here
-            });
-        });
-
-        // Quick Action Button Functionality
-        generateLetterBtn.addEventListener('click', () => {
-            console.log('Opening letter generation modal');
-            alert('Opening letter generation form...'); // Replace with actual modal
-        });
-
-        viewLettersBtn.addEventListener('click', () => {
-            console.log('Viewing all letters');
-            // Navigate to letters section
-            const lettersLink = document.querySelector('a[href="#letters"]');
-            lettersLink.click();
-        });
-
-        // Download Button Functionality
-        downloadBtns.forEach(btn => {
-            btn.parentElement.addEventListener('click', handleDownload);
-        });
-
-        function handleDownload(e) {
-            e.preventDefault();
-            const letterCard = e.currentTarget.closest('.dashboard-card');
-            const letterTitle = letterCard.querySelector('h4').textContent;
-            console.log(`Downloading ${letterTitle}`);
-            alert(`Downloading ${letterTitle}...`); // Replace with actual download logic
-        }
-
-        // Mobile Menu Functions
-        function toggleMobileMenu() {
-            sideNavigation.classList.toggle('active');
-            mobileOverlay.classList.toggle('active');
-            document.body.style.overflow = sideNavigation.classList.contains('active') ? 'hidden' : '';
-        }
-
-        function closeMobileMenu() {
-            sideNavigation.classList.remove('active');
-            mobileOverlay.classList.remove('active');
-            document.body.style.overflow = '';
-        }
-
-        mobileMenuBtn.addEventListener('click', toggleMobileMenu);
-        mobileOverlay.addEventListener('click', closeMobileMenu);
-
-        // Close mobile menu on window resize
-        window.addEventListener('resize', () => {
-            if (window.innerWidth > 768) {
-                closeMobileMenu();
-            }
-        });
-
-        // User Menu Functionality
-        const userMenuBtn = document.querySelector('.flex.items-center button');
-        userMenuBtn.addEventListener('click', () => {
-            console.log('Opening user menu');
-            alert('User menu options coming soon!'); // Replace with actual menu
-        });
-
-        // Modal Functionality
-        const letterModal = document.getElementById('letterModal');
-        const closeModal = document.getElementById('closeModal');
-        const cancelGeneration = document.getElementById('cancelGeneration');
-        const letterForm = document.getElementById('letterForm');
-        const fileUpload = document.getElementById('file-upload');
-
-        function openModal() {
-            letterModal.classList.add('active');
-            document.body.style.overflow = 'hidden';
-        }
-
-        function closeModalHandler() {
-            letterModal.classList.remove('active');
-            document.body.style.overflow = '';
-            letterForm.reset();
-        }
-
-        generateLetterBtn.addEventListener('click', openModal);
-        closeModal.addEventListener('click', closeModalHandler);
-        cancelGeneration.addEventListener('click', closeModalHandler);
-
-        // Close modal when clicking outside
-        letterModal.addEventListener('click', (e) => {
-            if (e.target === letterModal) {
-                closeModalHandler();
-            }
-        });
-
-        // File Upload Handling
-        const cvDropZone = document.getElementById('cvDropZone');
-        const jobDescDropZone = document.getElementById('jobDescDropZone');
-        const cvUpload = document.getElementById('cv-upload');
-        const jobDescUpload = document.getElementById('job-desc-upload');
-
-        function setupDropZone(dropZone, fileInput, fileType) {
-            dropZone.addEventListener('dragover', (e) => {
-                e.preventDefault();
-                dropZone.classList.add('border-blue-500');
-            });
-
-            dropZone.addEventListener('dragleave', () => {
-                dropZone.classList.remove('border-blue-500');
-            });
-
-            dropZone.addEventListener('drop', (e) => {
-                e.preventDefault();
-                dropZone.classList.remove('border-blue-500');
-                const file = e.dataTransfer.files[0];
-                handleFile(file, dropZone, fileType);
-            });
-
-            fileInput.addEventListener('change', (e) => {
-                const file = e.target.files[0];
-                handleFile(file, dropZone, fileType);
-            });
-        }
-
-        function handleFile(file, dropZone, fileType) {
-            if (file) {
-                const validTypes = {
-                    cv: ['application/pdf', 'image/jpeg', 'image/png', 'image/jpg'],
-                    jobDesc: ['application/pdf', 'image/jpeg', 'image/png', 'image/jpg']
-                };
-                const maxSize = 10 * 1024 * 1024; // 10MB
-
-                if (!validTypes[fileType].includes(file.type)) {
-                    alert('Please upload a PDF or image file (JPG, PNG)');
-                    return;
-                }
-
-                if (file.size > maxSize) {
-                    alert('File size should be less than 10MB');
-                    return;
-                }
-
-                // Show file name and preview if it's an image
-                const existingPreview = dropZone.querySelector('.file-preview');
-                if (existingPreview) {
-                    existingPreview.remove();
-                }
-
-                const previewContainer = document.createElement('div');
-                previewContainer.className = 'file-preview mt-3';
-
-                const fileName = document.createElement('p');
-                fileName.textContent = `Selected file: ${file.name}`;
-                fileName.classList.add('text-sm', 'text-gray-600', 'mb-2');
-                previewContainer.appendChild(fileName);
-
-                // Add image preview if it's an image
-                if (file.type.startsWith('image/')) {
-                    const img = document.createElement('img');
-                    img.className = 'mx-auto h-20 object-contain rounded-lg';
-                    img.file = file;
-
-                    const reader = new FileReader();
-                    reader.onload = (e) => { img.src = e.target.result; };
-                    reader.readAsDataURL(file);
-
-                    previewContainer.appendChild(img);
-                } else {
-                    // Show PDF icon for PDF files
-                    const pdfIcon = document.createElement('i');
-                    pdfIcon.className = 'bx bxs-file-pdf text-4xl text-red-500';
-                    previewContainer.appendChild(pdfIcon);
-                }
-
-                const existingFileInfo = dropZone.querySelector('.file-preview');
-                if (existingFileInfo) {
-                    existingFileInfo.remove();
-                }
-                dropZone.appendChild(previewContainer);
-            }
-        }
-
-        // Setup both drop zones
-        setupDropZone(cvDropZone, cvUpload, 'cv');
-        setupDropZone(jobDescDropZone, jobDescUpload, 'jobDesc');
-
-        // Form Submission
-        letterForm.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const formData = new FormData();
-            formData.append('type', document.getElementById('letterType').value);
-            formData.append('cv', cvUpload.files[0]);
-            formData.append('jobDescription', jobDescUpload.files[0]);
-
-            if (!cvUpload.files[0] || !jobDescUpload.files[0]) {
-                alert('Please upload both your CV and the job description');
-                return;
-            }
-
-            try {
-                // Show loading state
-                const submitBtn = letterForm.querySelector('button[type="submit"]');
-                const originalText = submitBtn.textContent;
-                submitBtn.disabled = true;
-                submitBtn.innerHTML = '<i class="bx bx-loader-alt bx-spin"></i> Generating...';
-
-                // Simulate API call (replace with actual API endpoint)
-                await new Promise(resolve => setTimeout(resolve, 2000));
-
-                // Success message
-                alert('Letter generated successfully!');
-                closeModalHandler();
-
-                // Reset button state
-                submitBtn.disabled = false;
-                submitBtn.textContent = originalText;
-
-                // Update dashboard with new letter
-                const letterTitle = `${document.getElementById('letterType').value} Letter`;
-                const letterDesc = `Generated from ${jobDescUpload.files[0].name}`;
-                addNewLetterToDisplay(letterTitle, letterDesc);
-
-            } catch (error) {
-                console.error('Error generating letter:', error);
-                alert('Error generating letter. Please try again.');
-            }
-        });
-
-        function addNewLetterToDisplay(title, description) {
-            const letterCard = document.createElement('div');
-            letterCard.className = 'dashboard-card bg-white rounded-xl shadow-sm p-4 sm:p-6';
-            letterCard.innerHTML = `
-                <div class="flex items-center justify-between mb-3 sm:mb-4">
-                    <div class="p-2 bg-blue-100 rounded-lg">
-                        <i class="bx bx-file text-lg sm:text-xl text-blue-600"></i>
-                    </div>
-                    <span class="text-xs sm:text-sm text-gray-500">Just now</span>
-                </div>
-                <h4 class="font-medium text-gray-900 mb-1 text-sm sm:text-base">${title}</h4>
-                <p class="text-xs sm:text-sm text-gray-600 mb-3 sm:mb-4">${description}</p>
-                <div class="flex justify-between items-center">
-                    <span class="text-xs sm:text-sm text-gray-500">PDF • Generated</span>
-                    <button class="flex items-center space-x-1 text-blue-600 hover:text-blue-700 text-xs sm:text-sm">
-                        <i class="bx bx-download"></i>
-                        <span>Download</span>
-                    </button>
-                </div>
-            `;
-
-            const recentActivity = document.querySelector('.grid.grid-cols-1.sm\\:grid-cols-2.lg\\:grid-cols-3');
-            recentActivity.insertBefore(letterCard, recentActivity.firstChild);
-        }
-    </script>
+    <script src="/js/app.js"></script>
 </body>
 </html>
