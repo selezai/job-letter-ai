@@ -60,17 +60,7 @@ try {
   
   const app = express();
 
-  // Middleware
-  app.use(express.json());
-  app.use(fileUpload());
-
-  // Debug request logging
-  app.use((req, res, next) => {
-      console.log('Request received:', req.method, req.url);
-      next();
-  });
-
-  // API routes
+  // API routes first
   app.get('/api', (req, res) => {
       console.log('API endpoint hit');
       res.json({ message: 'Letter AI API is running' });
@@ -117,7 +107,17 @@ try {
       }
   });
 
-  // Serve static files after API routes
+  // Basic middleware
+  app.use(express.json());
+  app.use(fileUpload());
+
+  // Request logging
+  app.use((req, res, next) => {
+      console.log('Request received:', req.method, req.url);
+      next();
+  });
+
+  // Serve static files
   const publicPath = path.join(__dirname, 'public');
   console.log('Serving static files from:', publicPath);
   app.use(express.static(publicPath));
@@ -687,6 +687,16 @@ We offer:
       }
   });
 
+  // Error handling
+  app.use((err, req, res, next) => {
+      console.error('Error:', err);
+      res.status(500).json({ error: 'Internal Server Error', details: err.message });
+  });
+
+  app.use((req, res) => {
+      res.status(404).json({ error: 'Not Found' });
+  });
+
   // Start the server
   const server = app.listen(PORT, '0.0.0.0', () => {
       console.log(`Server is running on port ${PORT}`);
@@ -695,16 +705,6 @@ We offer:
 
   server.on('error', (error) => {
       console.error('Server error:', error);
-  });
-
-  // Error handling middleware
-  app.use((req, res, next) => {
-      res.status(404).json({ error: 'Not Found' });
-  });
-
-  app.use((err, req, res, next) => {
-      console.error(err.stack);
-      res.status(500).json({ error: 'Internal Server Error' });
   });
 
 } catch (error) {
