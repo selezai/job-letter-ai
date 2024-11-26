@@ -3,68 +3,53 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Letter AI</title>
+  <title>Job Letter AI</title>
   <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 <body>
-  <!-- Navigation Bar -->
-  <header class="navbar">
-    <div class="logo">Letter AI</div>
-    <nav class="nav-links">
-      <a href="#upload" class="nav-link">Upload</a>
-      <a href="#dashboard" class="nav-link">Dashboard</a>
-    </nav>
-  </header>
+  <header>Job Letter AI</header>
 
-  <!-- Upload Section -->
-  <section id="upload" class="upload-section">
-    <div class="upload-container">
-      <div class="upload-info">
-        <h1>Generate Professional Letters</h1>
-        <p>Upload your CV and job description to create a tailored letter in minutes.</p>
-        <p><strong>First letter is FREE!</strong></p>
-      </div>
-      <div class="upload-form">
-        <form id="letterForm">
-          <label for="email">Email</label>
-          <input type="email" id="email" name="email" placeholder="Enter your email" required>
-          
-          <label for="letterType">Letter Type</label>
-          <select id="letterType" name="letterType">
-            <option value="cover-letter">Cover Letter</option>
-            <option value="motivation-letter">Motivation Letter</option>
-          </select>
-          
-          <label for="cvUpload">Upload CV (PDF or Image)</label>
-          <input type="file" id="cvUpload" name="cvUpload" accept=".pdf, .png, .jpg" required>
-          
-          <label for="jobDescUpload">Upload Job Description (PDF or Image)</label>
-          <input type="file" id="jobDescUpload" name="jobDescUpload" accept=".pdf, .png, .jpg" required>
-          
-          <button type="submit" class="btn-primary">Generate Letter</button>
-        </form>
-      </div>
-    </div>
-  </section>
-
-  <!-- Dashboard Section -->
-  <section id="dashboard" class="dashboard-section">
+  <!-- Dashboard Screen -->
+  <div id="dashboard" class="container active">
     <h2>My Dashboard</h2>
-    <div id="recentActivity">
-      <!-- Dynamic Cards for Recent Activity -->
-      <div class="activity-card">
-        <h3>Generated Letter</h3>
-        <p>Cover Letter for Software Engineer</p>
-        <button class="btn-secondary">Download</button>
-      </div>
-      <!-- Placeholder Message -->
-      <p class="no-activity-message">No recent activity. Start generating letters now!</p>
+    <div id="recentActivity" class="dashboard-placeholder">
+      <p class="no-activity-message">No recent activity. Start generating letters to see them here!</p>
     </div>
-  </section>
+  </div>
 
-  <footer>
-    <p>&copy; 2024 Letter AI. All rights reserved.</p>
-  </footer>
+  <!-- Upload Screen -->
+  <div id="upload" class="container">
+    <div class="upload-container">
+      <h2>Generate Professional Letters</h2>
+      <form id="uploadForm">
+        <input type="email" id="email" name="email" placeholder="Enter your email" required>
+        <select id="letterType" name="letterType" required>
+          <option value="" disabled selected>Select Letter Type</option>
+          <option value="motivation">Motivation Letter</option>
+          <option value="cover">Cover Letter</option>
+        </select>
+        <label for="cvUpload">Upload CV (PDF or Image)</label>
+        <input type="file" id="cvUpload" name="cv" accept="application/pdf, image/*" required>
+        <label for="jobDescUpload">Upload Job Description (PDF or Image)</label>
+        <input type="file" id="jobDescUpload" name="jobDesc" accept="application/pdf, image/*" required>
+        <button type="submit">Generate Letter</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Bottom Navigation -->
+  <div class="bottom-nav">
+    <div class="nav-item active" onclick="showScreen('dashboard')">
+      <i class="fas fa-home"></i>
+      <p>Dashboard</p>
+    </div>
+    <div class="nav-item" onclick="showScreen('upload')">
+      <i class="fas fa-upload"></i>
+      <p>Upload</p>
+    </div>
+  </div>
+
   <script src="app.js"></script>
 </body>
 </html>
