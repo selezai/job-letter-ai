@@ -13,8 +13,8 @@
   <!-- Dashboard Screen -->
   <div id="dashboard" class="container active">
     <h2>My Dashboard</h2>
-    <div id="recentActivity" class="dashboard-placeholder">
-      <p class="no-activity-message">No recent activity. Start generating letters to see them here!</p>
+    <div class="dashboard-placeholder">
+      <p>No recent activity. Start generating letters to see them here!</p>
     </div>
   </div>
 
@@ -22,7 +22,7 @@
   <div id="upload" class="container">
     <div class="upload-container">
       <h2>Generate Professional Letters</h2>
-      <form id="uploadForm">
+      <form id="uploadForm" onsubmit="startLoading(event)">
         <input type="email" id="email" name="email" placeholder="Enter your email" required>
         <select id="letterType" name="letterType" required>
           <option value="" disabled selected>Select Letter Type</option>
@@ -33,9 +33,22 @@
         <input type="file" id="cvUpload" name="cv" accept="application/pdf, image/*" required>
         <label for="jobDescUpload">Upload Job Description (PDF or Image)</label>
         <input type="file" id="jobDescUpload" name="jobDesc" accept="application/pdf, image/*" required>
-        <button type="submit">Generate Letter</button>
+        <button type="submit" id="generateBtn">Generate Letter</button>
+        <div class="spinner" id="spinner"></div>
       </form>
     </div>
+
+    <div class="letter-preview locked">
+      <div class="overlay">Unlock to Edit</div>
+      <p>This is a blurred letter preview...</p>
+      <button id="unlockButton">Unlock for R4.99</button>
+    </div>
+
+  </div>
+
+  <!-- Loading Container -->
+  <div class="loading-container" id="loading">
+    <p class="loading-text">Generating Your Letter<span class="dots"></span></p>
   </div>
 
   <!-- Bottom Navigation -->
@@ -47,6 +60,31 @@
     <div class="nav-item" onclick="showScreen('upload')">
       <i class="fas fa-upload"></i>
       <p>Upload</p>
+    </div>
+  </div>
+
+  <!-- Onboarding Modal -->
+  <div id="onboardingModal" class="modal">
+    <div class="modal-content">
+      <span class="close">&times;</span>
+      <h2>Welcome to Job Letter AI</h2>
+      <p>Step 1: Upload your CV.</p>
+      <div class="tone-style-selector" style="display: none;">
+        <label for="tone">Select Tone:</label>
+        <select id="tone">
+          <option value="professional">Professional</option>
+          <option value="enthusiastic">Enthusiastic</option>
+          <option value="concise">Concise</option>
+        </select>
+        <p class="tone-description"></p>
+      </div>
+      <div class="progress-dots">
+        <span class="dot active"></span>
+        <span class="dot"></span>
+        <span class="dot"></span>
+        <span class="dot"></span>
+      </div>
+      <button id="nextStep">Next</button>
     </div>
   </div>
 

@@ -4,6 +4,9 @@ const cvUpload = document.getElementById('cvUpload');
 const jobDescUpload = document.getElementById('jobDescUpload');
 const recentActivity = document.getElementById('recentActivity');
 const emailInput = document.getElementById('email');
+const generateBtn = document.getElementById('generateBtn');
+const spinner = document.getElementById('spinner');
+const loadingContainer = document.getElementById('loading');
 
 // State Management
 let isGenerating = false;
@@ -30,114 +33,57 @@ function setupFileInputs() {
     fileInputs.forEach(input => {
         input.addEventListener('change', (e) => {
             const file = e.target.files[0];
-            if (file) {
-                validateFile(file, input);
+            const maxSize = 50 * 1024 * 1024; // 50MB
+            
+            if (file && file.size > maxSize) {
+                e.target.value = ''; // Clear the input
+                showError('File size must be less than 50MB');
             }
         });
     });
 }
 
-// File Validation
-function validateFile(file, input) {
-    const maxSize = 10 * 1024 * 1024; // 10MB
-    const allowedTypes = ['application/pdf', 'image/jpeg', 'image/png'];
-
-    if (file.size > maxSize) {
-        alert('File size must be less than 10MB');
-        input.value = '';
-        return false;
-    }
-
-    if (!allowedTypes.includes(file.type)) {
-        alert('Please upload a PDF or image file (JPG, PNG)');
-        input.value = '';
-        return false;
-    }
-
-    return true;
+// Loading functions
+function showLoading() {
+  document.getElementById("loading").style.display = "block";
 }
+
+function hideLoading() {
+  document.getElementById("loading").style.display = "none";
+}
+
+// Form handling
+function handleSubmit(event) {
+  event.preventDefault();
+  showLoading();
+  
+  // Simulate API call
+  setTimeout(() => {
+    hideLoading();
+    alert('Letter generated successfully!');
+    document.getElementById('uploadForm').reset();
+  }, 3000);
+}
+
+// Add event listeners
+document.getElementById('uploadForm').addEventListener('submit', handleSubmit);
 
 // Form Submission
-uploadForm.addEventListener('submit', async (e) => {
-    e.preventDefault();
+// uploadForm.addEventListener('submit', startLoading);
 
-    if (isGenerating) {
-        return;
-    }
+// Screen Navigation
+function showScreen(screen) {
+    // Remove active class from all containers and nav items
+    document.querySelectorAll('.container').forEach((container) => {
+        container.classList.remove('active');
+    });
+    document.querySelectorAll('.nav-item').forEach((item) => {
+        item.classList.remove('active');
+    });
 
-    const formData = new FormData(uploadForm);
-    
-    // Validate files
-    const cv = cvUpload.files[0];
-    const jobDesc = jobDescUpload.files[0];
-
-    if (!validateFile(cv, cvUpload) || !validateFile(jobDesc, jobDescUpload)) {
-        return;
-    }
-
-    // Save email for future use
-    localStorage.setItem('userEmail', emailInput.value);
-
-    try {
-        isGenerating = true;
-        showLoadingState();
-
-        const response = await fetch('/generate-letter', {
-            method: 'POST',
-            body: formData
-        });
-
-        if (!response.ok) {
-            throw new Error('Failed to generate letter');
-        }
-
-        const data = await response.json();
-        
-        // Add new activity to dashboard
-        addActivityCard({
-            title: formData.get('letterType') === 'cover-letter' ? 'Cover Letter' : 'Motivation Letter',
-            description: 'Generated successfully',
-            id: data.id
-        });
-
-        showSuccessMessage('Letter generated successfully!');
-        uploadForm.reset();
-
-    } catch (error) {
-        showErrorMessage(error.message);
-    } finally {
-        isGenerating = false;
-        hideLoadingState();
-    }
-});
-
-// UI Updates
-function showLoadingState() {
-    const submitBtn = uploadForm.querySelector('button[type="submit"]');
-    submitBtn.disabled = true;
-    submitBtn.innerHTML = '<span class="loading-spinner"></span> Generating...';
-}
-
-function hideLoadingState() {
-    const submitBtn = uploadForm.querySelector('button[type="submit"]');
-    submitBtn.disabled = false;
-    submitBtn.innerHTML = 'Generate Letter';
-}
-
-function showSuccessMessage(message) {
-    const messageDiv = document.createElement('div');
-    messageDiv.className = 'success-message';
-    messageDiv.textContent = message;
-    uploadForm.insertAdjacentElement('beforebegin', messageDiv);
-    setTimeout(() => messageDiv.remove(), 3000);
-}
-
-function showErrorMessage(message) {
-    const messageDiv = document.createElement('div');
-    messageDiv.className = 'error-message';
-    messageDiv.textContent = message;
-    uploadForm.insertAdjacentElement('beforebegin', messageDiv);
-    setTimeout(() => messageDiv.remove(), 3000);
+    // Add active class to selected screen and nav item
+    document.getElementById(screen).classList.add('active');
+    document.querySelector(`.nav-item[onclick="showScreen('${screen}')"]`).classList.add('active');
 }
 
 // Recent Activity Management
@@ -214,6 +160,182 @@ async function downloadLetter(letterId) {
     } catch (error) {
         showErrorMessage('Failed to download letter. Please try again.');
     }
+}
+
+// UI Updates
+function showLoadingState() {
+    const submitBtn = uploadForm.querySelector('button[type="submit"]');
+    submitBtn.disabled = true;
+    submitBtn.innerHTML = '<span class="loading-spinner"></span> Generating...';
+}
+
+function hideLoadingState() {
+    const submitBtn = uploadForm.querySelector('button[type="submit"]');
+    submitBtn.disabled = false;
+    submitBtn.innerHTML = 'Generate Letter';
+}
+
+function showSuccessMessage(message) {
+    const messageDiv = document.createElement('div');
+    messageDiv.className = 'success-message';
+    messageDiv.textContent = message;
+    uploadForm.insertAdjacentElement('beforebegin', messageDiv);
+    setTimeout(() => messageDiv.remove(), 3000);
+}
+
+function showErrorMessage(message) {
+    const messageDiv = document.createElement('div');
+    messageDiv.className = 'error-message';
+    messageDiv.textContent = message;
+    uploadForm.insertAdjacentElement('beforebegin', messageDiv);
+    setTimeout(() => messageDiv.remove(), 3000);
+}
+
+// Modal handling
+const modal = document.getElementById('onboardingModal');
+const closeBtn = document.querySelector('.close');
+const nextBtn = document.getElementById('nextStep');
+const onboardingText = document.querySelector(".modal-content p");
+const dots = document.querySelectorAll(".dot");
+const toneSelector = document.getElementById("tone");
+const toneDescription = document.querySelector('.tone-description');
+
+const toneDescriptions = {
+  professional: "A formal and polished tone suitable for traditional industries and corporate roles.",
+  enthusiastic: "An energetic and passionate tone that shows strong interest in the role and company.",
+  concise: "A clear and direct tone that gets straight to the point while maintaining professionalism."
+};
+
+const steps = [
+  "Step 1: Upload your CV.",
+  "Step 2: Upload the Job Description.",
+  "Step 3: Select Tone & Style.",
+  "You're all set!"
+];
+
+let currentStep = 0;
+
+function updateProgress() {
+  // Update dots
+  dots.forEach((dot, index) => {
+    dot.classList.toggle('active', index === currentStep);
+  });
+  
+  // Update text
+  onboardingText.innerText = steps[currentStep];
+  
+  // Show/hide tone selector on step 3
+  toneSelector.style.display = currentStep === 2 ? 'block' : 'none';
+  
+  // Update button text
+  if (currentStep === steps.length - 1) {
+    nextBtn.innerText = "Get Started";
+  }
+}
+
+// Show modal on first visit
+if (!localStorage.getItem('onboardingComplete')) {
+  modal.style.display = 'block';
+  updateProgress();
+}
+
+// Update tone description when selection changes
+toneSelector.addEventListener("change", () => {
+  const selectedTone = toneSelector.value;
+  console.log("Tone selected:", selectedTone);
+  
+  // Update description
+  toneDescription.textContent = toneDescriptions[selectedTone];
+  
+  // Store selection
+  localStorage.setItem('selectedTone', selectedTone);
+  
+  // Add visual feedback
+  toneSelector.classList.add('tone-changed');
+  setTimeout(() => {
+    toneSelector.classList.remove('tone-changed');
+  }, 300);
+});
+
+// Initialize tone from localStorage or default to 'professional'
+const savedTone = localStorage.getItem('selectedTone') || 'professional';
+toneSelector.value = savedTone;
+toneDescription.textContent = toneDescriptions[savedTone];
+
+// Close modal when clicking close button
+closeBtn.onclick = function() {
+  modal.style.display = 'none';
+  localStorage.setItem('onboardingComplete', 'true');
+}
+
+// Close modal when clicking outside
+window.onclick = function(event) {
+  if (event.target == modal) {
+    modal.style.display = 'none';
+    localStorage.setItem('onboardingComplete', 'true');
+  }
+}
+
+// Handle next step button
+nextBtn.onclick = function() {
+  // If on tone selection step, store the selected tone
+  if (currentStep === 2) {
+    const selectedTone = document.getElementById('tone').value;
+    localStorage.setItem('selectedTone', selectedTone);
+  }
+  
+  currentStep++;
+  if (currentStep < steps.length) {
+    updateProgress();
+  } else {
+    modal.style.display = 'none';
+    localStorage.setItem('onboardingComplete', 'true');
+    showScreen('upload');
+  }
+}
+
+// Letter Preview Unlock
+const unlockButton = document.getElementById('unlockButton');
+const letterPreview = document.querySelector('.letter-preview');
+
+unlockButton.addEventListener('click', async () => {
+  // Here you would typically handle the payment process
+  // For now, we'll just simulate it with a timeout
+  unlockButton.disabled = true;
+  unlockButton.innerHTML = `
+    <span class="unlock-icon">⌛</span>
+    Processing...
+  `;
+  
+  try {
+    // Simulate payment processing
+    await new Promise(resolve => setTimeout(resolve, 1500));
+    
+    // Success
+    letterPreview.classList.remove('locked');
+    unlockButton.style.display = 'none';
+    
+    // Store unlock state
+    localStorage.setItem('letterUnlocked', 'true');
+    
+    // Show success message
+    showSuccessMessage('Letter unlocked successfully!');
+    
+  } catch (error) {
+    // Handle error
+    unlockButton.disabled = false;
+    unlockButton.innerHTML = `
+      <span class="unlock-icon">🔓</span>
+      Try Again
+    `;
+    showErrorMessage('Failed to process payment. Please try again.');
+  }
+});
+
+// Check if letter is already unlocked
+if (localStorage.getItem('letterUnlocked') === 'true') {
+  letterPreview.classList.remove('locked');
+  unlockButton.style.display = 'none';
 }
 
 // Add some CSS for loading spinner and messages

@@ -6,6 +6,21 @@ const Anthropic = require('@anthropic-ai/sdk');
 const Paystack = require('paystack-api')(process.env.PAYSTACK_SECRET);
 require('dotenv').config({ path: path.resolve(__dirname, '../.env') });
 
+// Initialize Express app
+const app = express();
+
+// Middleware
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use(fileUpload({
+    limits: { fileSize: 50 * 1024 * 1024 }, // 50MB max file size
+    useTempFiles: true,
+    tempFileDir: '/tmp/'
+}));
+
+// Serve static files from the public directory
+app.use(express.static(path.join(__dirname, 'public')));
+
 // Debug startup information
 console.log('Starting server...');
 console.log('Current working directory:', process.cwd());
@@ -58,21 +73,11 @@ try {
     process.env.SUPABASE_ANON_KEY || supabaseKey // Fallback to service role if anon key not set
   );
   
-  const app = express();
-
-  // Basic middleware
-  app.use(express.json());
-  app.use(fileUpload());
-
   // Request logging
   app.use((req, res, next) => {
       console.log('Request received:', req.method, req.url);
       next();
   });
-
-  // Serve static files
-  const publicPath = path.join(__dirname, 'public');
-  app.use(express.static(publicPath));
 
   // Home route
   app.get('/', (req, res) => {

@@ -1,0 +1,3 @@
+[build]
+  publish = "server/public"
+  command = "# no build command needed"
